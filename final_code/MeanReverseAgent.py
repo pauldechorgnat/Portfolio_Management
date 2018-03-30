@@ -14,8 +14,9 @@ class MeanReverseAgent:
         self.history = []
 
         self.default_action = np.zeros(number_of_assets+1)
-        self.default_action[-1] = keeping_proportion
+        self.default_action[-1] = 1
         self.keeping_proportion = keeping_proportion
+        self.number_of_assets = number_of_assets
         
         print('Agent Created')
         pass
@@ -37,12 +38,12 @@ class MeanReverseAgent:
         	self.history.append(observation[:-1])
         	return self.default_action
         else :
-        	# investing everything on the least performing asset
+            # investing everything on the least performing asset
         	index = np.argmin(np.array(self.history[-1])- np.array(self.history[0]))
-        	action = self.default_action
-        	action[index] = 1- self.keeping_proportion
-        	# updating the history
-        	self.history = self.history[1:] + [observation[:-1]]
+        	action = np.zeros(self.number_of_assets+1)
+            action[index]= 1 - self.keeping_proportion
+            action[-1] = self.keeping_proportion
+            self.history = self.history[1:] + [observation[:-1]]
         	return action
             
     def reward(self, observation, action, reward):
